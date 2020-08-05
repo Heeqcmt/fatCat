@@ -1,0 +1,11 @@
+The flow of the program
+1) capture screen for analyse 
+2) Use ML models to find the location of the fish bobber
+3）Move the mouse to the bobber
+4) Listen for audio spike to determine when the fish was caught
+5) Simulate a click for the catch
+6) recycle the process
+
+Step 1
+1)  pyautogui to save the screenshot 
+2)  feed screenshot to ML to get the location of the bobber
