@@ -6,6 +6,20 @@ The flow of the program
 5) Simulate a click for the catch
 6) recycle the process
 
-Step 1
+Module 1
 1)  pyautogui to save the screenshot 
 2)  feed screenshot to ML to get the location of the bobber
+
+Module 2 
+1)  TensorFlow to train the model
+2)  capture the location of the bobber
+3)  If the screenshot is saved instead of just passed delete the image
+
+Module 3
+1)  move the cursor to bobber location by using pyautogui
+2)  Once fish is caught(determined by the pyaudio) click
+3)  Recast the fishing bobber
+
+Module 4
+1） Use pyaudio to listen for the output of pc for a spike of volume
+2)  Default listen for 20 seconds
