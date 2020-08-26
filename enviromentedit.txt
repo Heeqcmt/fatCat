@@ -1,0 +1,5 @@
+ c:\users\bermau\appdata\local\temp\pip-req-build-3dd6g06o
+The default metrics are based on those used in Pascal VOC evaluation.
+
+    To use the COCO object detection metrics add metrics_set: "coco_detection_metrics" to the eval_config message in the config file.
+    To use the COCO instance segmentation metrics add metrics_set: "coco_mask_metrics" to the eval_config message in the config file.

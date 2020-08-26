@@ -1,4 +1,5 @@
 The flow of the program
+0) Cast fishing
 1) capture screen for analyse 
 2) Use ML models to find the location of the fish bobber
 3）Move the mouse to the bobber
@@ -6,13 +7,20 @@ The flow of the program
 5) Simulate a click for the catch
 6) recycle the process
 
-Module 1
+Module 1 ---- done
 1)  pyautogui to save the screenshot 
 2)  feed screenshot to ML to get the location of the bobber
 
-Module 2 
-1)  TensorFlow to train the model
+Module 2 ---- ongoing
+1)  TensorFlow to train the model 
+    1) install TensorFlow ---- done
+    2) install Detection API ---- done
+    3) New model training ---- ongoing0
+        1) photo gathering ---- thanks mau
+        2) classfing the photos --- done
+        3) Run thought training --- done
 2)  capture the location of the bobber
+        1) find the location of the bobber in the actual screen
 3)  If the screenshot is saved instead of just passed delete the image
 
 Module 3
