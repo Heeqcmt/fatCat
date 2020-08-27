@@ -1,3 +1,3 @@
 import pyautogui as pag
 
-im1 = pag.screenshot("C:/Users/BerMau/Desktop/img1.png")
+pag.screenshot('c:/Users/BerMau/Desktop/image1.jpg')
