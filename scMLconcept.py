@@ -17,6 +17,28 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import warnings
 import pyautogui as pag
+import pyaudio as pa
+import struct
+
+
+#constants
+CHUNK = 1024 * 2
+FORMAT = pa.paInt16
+CHANNEL = 1
+RATE = 44100
+
+#pyaudio class instant
+p = pa.PyAudio()
+
+ #stream object to get data from microphone
+stream = p.open(
+    format = FORMAT,
+    channels = CHANNEL,
+    rate = RATE,
+    input = True,
+    output = True,
+    frames_per_buffer = CHUNK
+)
 
 
 #prep work
@@ -50,9 +72,12 @@ category_index = label_map_util.create_categories_from_labelmap(PATH_TO_LABELS, 
 
 
 while True:
+
+    #need to wait because blizzard is shit
+    time.sleep(1)
     #cast fish
     pag.press('e')
-    time.sleep(2)
+    time.sleep(3)
 #capture image
     pag.screenshot(PATH_TO_IMAGE)
 
@@ -74,17 +99,7 @@ while True:
     detections['num_detections'] = num_detections
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
     image_np_with_detections = image_np.copy()
-#draw the box on to the image
-    viz_utils.visualize_boxes_and_labels_on_image_array(
-        image_np_with_detections,
-        detections['detection_boxes'],
-        detections['detection_classes'],
-        detections['detection_scores'],
-        category_index,
-        use_normalized_coordinates=True,
-        max_boxes_to_draw=200,
-        min_score_thresh=.30,
-        agnostic_mode=False)
+
 
 #extract the mid point of the box
     xmax = detections['detection_boxes'][0][3]
@@ -99,11 +114,27 @@ while True:
 #move mouse
     pag.moveTo(xmid,ymid)
 
-    plt.figure()
-    plt.imshow(image_np_with_detections)
-    print('Done')
-    plt.savefig("afterlabel.jpg")
+   
+    start_time = time.time()
+    noFish = True
+    while noFish:
+        #binary data
+        data = stream.read(CHUNK)
 
-    time.sleep(10)
+        #convert data to integers, make up the array
+        data_int = struct.unpack(str(2 * CHUNK) + 'B', data)
 
+        # create np array
+        data_np = np.array(data_int, dtype='b')[::2] + 128
+        end_time = time.time()
+        fish_time = end_time - start_time
+        if data_np[0] > 210:
+            time.sleep(1)
+            pag.click(button = 'right')
+            noFish = False
+        elif fish_time > 20:
+            noFish = False
+
+   
+    
     
