@@ -22,13 +22,13 @@ Module 2 ---- ongoing
 2)  capture the location of the bobber
         1) find the location of the bobber in the actual screen --- done
 3)  If the screenshot is saved instead of just passed delete the image
-        1) no need to save the picture and can delete the orignal picture
+        1) no need to save the picture and can delete the orignal picture -- done
 
 Module 3
-1)  move the cursor to bobber location by using pyautogui
-2)  Once fish is caught(determined by the pyaudio) click
-3)  Recast the fishing bobber
+1)  move the cursor to bobber location by using pyautogui -- done
+2)  Once fish is caught(determined by the pyaudio) click  -- done
+3)  Recast the fishing bobber -- done
 
 Module 4
-1） Use pyaudio to listen for the output of pc for a spike of volume
-2)  Default listen for 20 seconds
+1） Use pyaudio to listen for the output of pc for a spike of volume -- need to figure out how to use WASapi
+2)  Default listen for 20 seconds -- done
