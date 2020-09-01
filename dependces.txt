@@ -1,0 +1,4 @@
+tensorflow (installation requirements seperated from original)
+tensorflow model trained
+tensorflow object detection api (installation requirement seperated)
+numpy
