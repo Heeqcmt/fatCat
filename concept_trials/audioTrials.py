@@ -42,6 +42,7 @@ stream = p.open(
     rate=RATE,
     input=True,
     output=True,
+    input_device_index = 1,
     frames_per_buffer=CHUNK
 )
 

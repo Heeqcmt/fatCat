@@ -132,8 +132,10 @@ while True:
             time.sleep(1)
             pag.click(button = 'right')
             noFish = False
+            print("sound trigger")
         elif fish_time > 20:
             noFish = False
+            print("time trigger")
 
    
     
