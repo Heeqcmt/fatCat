@@ -82,7 +82,7 @@ def get_bob():
     image_np_with_detections = image_np.copy()
 
 
-#extract the mid point of the box
+    #extract the mid point of the box
     xmax = detections['detection_boxes'][0][3]
     xmin = detections['detection_boxes'][0][1]
     ymax = detections['detection_boxes'][0][0]
@@ -92,7 +92,7 @@ def get_bob():
     print('xmid {}'.format(xmid))
     print('ymid {}'.format(ymid))
 
-#move mouse
+    #move mouse
     pag.moveTo(xmid,ymid)
 
 
@@ -144,7 +144,7 @@ while True:
             soundtrigger += 1
             
 
-        if soundtrigger == 2:
+        if soundtrigger == 3:
             time.sleep(1)
             pag.click(button = 'right')
             noFish = False
