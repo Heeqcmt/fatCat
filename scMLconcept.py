@@ -117,7 +117,10 @@ while True:
    
     start_time = time.time()
     noFish = True
+    sound_prev = 120
+    stream.start_stream()
     while noFish:
+        
         #binary data
         data = stream.read(CHUNK)
 
@@ -128,14 +131,21 @@ while True:
         data_np = np.array(data_int, dtype='b')[::2] + 128
         end_time = time.time()
         fish_time = end_time - start_time
-        if data_np[0] > 210:
+
+        #if difference is bigger than 50, the fish is hooked
+        if abs(data_np[0] - sound_prev) > 50:
             time.sleep(1)
             pag.click(button = 'right')
             noFish = False
-            print("sound trigger")
+            print(data_np[0],end="\n")
+            print(sound_prev,end="\n")
         elif fish_time > 20:
             noFish = False
             print("time trigger")
+            
+        sound_prev = data_np[0]
+    stream.stop_stream()
+        
 
    
     
