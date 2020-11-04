@@ -58,40 +58,21 @@ def load_image_into_numpy_array(path):
     return np.array(Image.open(path))
 
 
-
-
-#load the saved model
-print('Loading model ...', end='')
-start_time = time.time()
-detect_fn = tf.saved_model.load(PATH_TO_SAVED_MODEL)
-end_time = time.time()
-elapsed_time = end_time - start_time
-print('Done! Took {} seconds'.format(elapsed_time))
-#load label map for plotting
-category_index = label_map_util.create_categories_from_labelmap(PATH_TO_LABELS, use_display_name=True)
-
-
-while True:
-
-    #need to wait because blizzard is shit
-    time.sleep(1)
-    #cast fish
-    pag.press('e')
-    time.sleep(3)
-#capture image
+def get_bob():
+    #capture image
     pag.screenshot(PATH_TO_IMAGE)
 
-#find points
+    #find points
     print('Running inference for {}...'.format(IMAGE_PATH), end='')
-#load the image into numpy
+    #load the image into numpy
     image_np = load_image_into_numpy_array(IMAGE_PATH)
-#load the image into the tensor
+    #load the image into the tensor
     input_tensor = tf.convert_to_tensor(image_np)
-#add if there are batch of images
+    #add if there are batch of images
     input_tensor = input_tensor[tf.newaxis, ...]
-#run detection on the image
+    #run detection on the image
     detections = detect_fn(input_tensor)
-#pop the total number of detections 
+    #pop the total number of detections 
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy()
                     for key, value in detections.items()}
@@ -114,9 +95,35 @@ while True:
 #move mouse
     pag.moveTo(xmid,ymid)
 
+
+
+
+
+#load the saved model
+print('Loading model ...', end='')
+start_time = time.time()
+detect_fn = tf.saved_model.load(PATH_TO_SAVED_MODEL)
+end_time = time.time()
+elapsed_time = end_time - start_time
+print('Done! Took {} seconds'.format(elapsed_time))
+#load label map for plotting
+category_index = label_map_util.create_categories_from_labelmap(PATH_TO_LABELS, use_display_name=True)
+
+
+while True:
+
+    #need to wait because blizzard is shit
+    time.sleep(1)
+    #cast fish
+    pag.press('e')
+    time.sleep(3)
+
+    #move coursor to bobber
+    get_bob()
    
     start_time = time.time()
     noFish = True
+    soundtrigger = 0
     sound_prev = 120
     stream.start_stream()
     while noFish:
@@ -134,11 +141,13 @@ while True:
 
         #if difference is bigger than 50, the fish is hooked
         if abs(data_np[0] - sound_prev) > 50:
+            soundtrigger += 1
+            
+
+        if soundtrigger == 2:
             time.sleep(1)
             pag.click(button = 'right')
             noFish = False
-            print(data_np[0],end="\n")
-            print(sound_prev,end="\n")
         elif fish_time > 20:
             noFish = False
             print("time trigger")
