@@ -10,8 +10,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import pathlib
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as viz_utils
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -19,6 +17,11 @@ import warnings
 import pyautogui as pag
 import pyaudio as pa
 import struct
+
+
+
+import getBob 
+import sonar
 
 
 #constants
@@ -42,60 +45,7 @@ stream = p.open(
 
 
 #prep work
-PATH_TO_SAVED_MODEL = "c:/Users/BerMau/Documents/Tensorflow/workplace/bobber/exported-models/my_model/saved_model"
-PATH_TO_LABELS = "c:/Users/BerMau/Documents/Tensorflow/workplace/bobber/annotations/label_map.pbtxt"
-PATH_TO_IMAGE = "c:/Users/BerMau/Desktop/image1.jpg"
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
-#saved image in images/finaltest
-def get_image():
-    image_paths = pathlib.Path(PATH_TO_IMAGE)
-    return image_paths
-IMAGE_PATH = get_image()
-#putting everything together
-def load_image_into_numpy_array(path):
-    return np.array(Image.open(path))
-
-
-def get_bob():
-    #capture image
-    pag.screenshot(PATH_TO_IMAGE)
-
-    #find points
-    print('Running inference for {}...'.format(IMAGE_PATH), end='')
-    #load the image into numpy
-    image_np = load_image_into_numpy_array(IMAGE_PATH)
-    #load the image into the tensor
-    input_tensor = tf.convert_to_tensor(image_np)
-    #add if there are batch of images
-    input_tensor = input_tensor[tf.newaxis, ...]
-    #run detection on the image
-    detections = detect_fn(input_tensor)
-    #pop the total number of detections 
-    num_detections = int(detections.pop('num_detections'))
-    detections = {key: value[0, :num_detections].numpy()
-                    for key, value in detections.items()}
-
-    detections['num_detections'] = num_detections
-    detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
-    image_np_with_detections = image_np.copy()
-
-
-    #extract the mid point of the box
-    xmax = detections['detection_boxes'][0][3]
-    xmin = detections['detection_boxes'][0][1]
-    ymax = detections['detection_boxes'][0][0]
-    ymin = detections['detection_boxes'][0][2]
-    xmid = (((xmax - xmin)/2) + xmin) * 1920
-    ymid = (((ymax - ymin)/2) + ymin) * 1080
-    print('xmid {}'.format(xmid))
-    print('ymid {}'.format(ymid))
-
-    #move mouse
-    pag.moveTo(xmid,ymid)
-
-
+PATH_TO_SAVED_MODEL = "mlComponent/saved_model"
 
 
 
@@ -106,8 +56,6 @@ detect_fn = tf.saved_model.load(PATH_TO_SAVED_MODEL)
 end_time = time.time()
 elapsed_time = end_time - start_time
 print('Done! Took {} seconds'.format(elapsed_time))
-#load label map for plotting
-category_index = label_map_util.create_categories_from_labelmap(PATH_TO_LABELS, use_display_name=True)
 
 
 while True:
@@ -119,41 +67,10 @@ while True:
     time.sleep(3)
 
     #move coursor to bobber
-    get_bob()
+    getBob.get_bob(detect_fn)
+    sonar.find_fish(stream)
    
-    start_time = time.time()
-    noFish = True
-    soundtrigger = 0
-    sound_prev = 120
-    stream.start_stream()
-    while noFish:
-        
-        #binary data
-        data = stream.read(CHUNK)
 
-        #convert data to integers, make up the array
-        data_int = struct.unpack(str(2 * CHUNK) + 'B', data)
-
-        # create np array
-        data_np = np.array(data_int, dtype='b')[::2] + 128
-        end_time = time.time()
-        fish_time = end_time - start_time
-
-        #if difference is bigger than 50, the fish is hooked
-        if abs(data_np[0] - sound_prev) > 50:
-            soundtrigger += 1
-            
-
-        if soundtrigger == 3:
-            time.sleep(1)
-            pag.click(button = 'right')
-            noFish = False
-        elif fish_time > 20:
-            noFish = False
-            print("time trigger")
-            
-        sound_prev = data_np[0]
-    stream.stop_stream()
         
 
    

@@ -32,3 +32,11 @@ Module 3
 Module 4
 1） Use pyaudio to listen for the output of pc for a spike of volume -- need to figure out how to use WASapi
 2)  Default listen for 20 seconds -- done
+
+
+Refactoring effort
+stage one 
+move model and label to the same folder, and change folder structure accordingly -- done
+stage two 
+change from sphegetti into modular code in preperation for GUI dev
+Landing page
