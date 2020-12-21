@@ -12,25 +12,15 @@ import warnings
 import pyautogui as pag
 import pyaudio as pa
 import struct
+import threading
 
 
 
 import getBob 
 import sonar
 
-fishing = False
-def fish():
-    global fishing
-    fishing = True
-
-def rest():
-    global fishing
-    fishing = False
-    label_info['text']="Resting"
-
-def loop():
-    if fishing:
-        label_info['text']="Fishing"
+def loop(id,stop_fish):
+    while stop_fish():
         #need to wait because blizzard is shit
         time.sleep(1)
         #cast fish
@@ -40,7 +30,28 @@ def loop():
         #move coursor to bobber
         getBob.get_bob(detect_fn)
         sonar.find_fish(stream)
-    window.after(1000,loop)
+        
+
+#fishing thread
+stop = False
+fish_thread = threading.Thread(target=loop,args=(1,lambda: stop
+))
+def fish():
+    global fish_thread
+    global stop 
+    stop = True
+    label_info['text']="Fishing"
+    fish_thread.start()
+
+def rest():
+    global fish_thread
+    global stop
+    stop = False
+    print("resting")
+    label_info['text']="Resting"
+    fish_thread.join()
+
+
 
 
 #constants
@@ -111,5 +122,5 @@ button_rest.grid(row=0,column=1)
 
 
 
-window.after(1000,loop)
+# window.after(1000,loop)
 window.mainloop()
