@@ -34,22 +34,25 @@ def loop(id,stop_fish):
 
 #fishing thread
 stop = False
-fish_thread = threading.Thread(target=loop,args=(1,lambda: stop
-))
+global_threads = []
+
 def fish():
-    global fish_thread
+    global global_threads
     global stop 
     stop = True
     label_info['text']="Fishing"
-    fish_thread.start()
+    local_tread = threading.Thread(target=loop,args=(1,lambda: stop))
+    global_threads.append(local_tread)
+    local_tread.start()
 
 def rest():
-    global fish_thread
+    global global_threads
     global stop
     stop = False
     print("resting")
     label_info['text']="Resting"
-    fish_thread.join()
+    for threads in global_threads:
+        threads.join()
 
 
 
@@ -109,7 +112,7 @@ frame_selection.grid(row=2,column=0)
 label_title = tk.Label(master= frame_title, text="Fat Cat Needs Fishes")
 label_title.pack()
 
-label_info = tk.Label(master=frame_info, text="status_text")
+label_info = tk.Label(master=frame_info, text="waiting to start")
 label_info.pack()
 
 button_fish = tk.Button(master= frame_selection,text="Fish~",command=fish)
